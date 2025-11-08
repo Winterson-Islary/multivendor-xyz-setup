@@ -1,5 +1,5 @@
 # Multivendor System
-Trying to build a multivendor store (undecided) while following "best-practices".
+Trying to build a simple multivendor store for college where departments and college authorities will be able to list unused or old products or anything for that matter, for sale.
 
 ## Goals
 	1. Learn about multivendor systems.

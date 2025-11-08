@@ -1,4 +1,4 @@
-import Store, { type StoreEntityType } from "@/components/stores";
+import Store, { type StoreEntityType } from "@/components/store";
 
 const mockStores: StoreEntityType[] = [
 	{
