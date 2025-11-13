@@ -1,0 +1,193 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  name           String
+  email          String   @unique
+  emailVerified Boolean   @default(false)
+  password       String
+  role           Role     @default(USER)
+  phone          String?
+  profileImage   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  // Relations
+  stores         Store[]        @relation("UserStores")
+  reviews        Review[]
+  orders         Order[]
+
+  @@map("users")
+}
+
+model Store {
+  id             String   @id @default(cuid())
+  name           String
+  description    String
+  logoUrl        String?
+  bannerUrl      String?
+  location       String?
+  contactEmail   String?
+  contactPhone   String?
+  rating         Float?   @default(0)
+  itemsCount     Int?     @default(0)
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  ownerId        String
+  owner          User      @relation("UserStores", fields: [ownerId], references: [id])
+  department     Department? // optional one-to-one
+  items          Item[]
+  reviews        Review[]
+}
+
+model Department {
+  id       String @id @default(cuid())
+  name     String
+  code     String? // e.g., "CSE", "MECH", etc.
+  store    Store?  @relation(fields: [storeId], references: [id])
+  storeId  String? @unique
+}
+
+model Item {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  price         Float?
+  quantity      Int       @default(1)
+  imageUrl      String?
+  condition     Condition @default(USED)
+  rating        Float?    @default(0)
+  reviewCount   Int?      @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  storeId       String
+  store         Store     @relation(fields: [storeId], references: [id])
+  categories    Category[] @relation("ItemCategories")
+  reviews       Review[]
+  orders        Order[]
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Float
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  // Relations
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  itemId     String
+  item       Item     @relation(fields: [itemId], references: [id])
+  storeId    String?
+  store      Store?   @relation(fields: [storeId], references: [id])
+}
+
+model Order {
+  id          String    @id @default(cuid())
+  status      OrderStatus @default(PENDING)
+  quantity    Int        @default(1)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  itemId      String
+  item        Item       @relation(fields: [itemId], references: [id])
+}
+
+model Category {
+  id       String @id @default(cuid())
+  name     String @unique
+
+  // Many-to-Many
+  items    Item[] @relation("ItemCategories")
+}
+
+// 📦 Enums
+
+enum Role {
+  ADMIN
+  DEPARTMENT
+  USER
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum Condition {
+  NEW
+  USED
+  DAMAGED
+}
+
+// For Better-Auth
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verifications")
+}
