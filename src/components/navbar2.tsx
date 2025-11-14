@@ -142,11 +142,11 @@ export default function Navbar() {
 					</NavigationMenu>
 					<div className="hidden items-center gap-4 lg:flex">
 						<Button variant="outline" className="">
-							<Link href="/sign-in">Sign in</Link>
+							<Link href="/login">Sign in</Link>
 						</Button>
 						<Button className="">
 							{" "}
-							<Link href="/sign-up">Create account</Link>
+							<Link href="/register">Create account</Link>
 						</Button>
 					</div>
 
@@ -219,12 +219,12 @@ export default function Navbar() {
 								</div>
 								<div className="mt-6 flex flex-col gap-4">
 									<Button variant="outline" className="h-full">
-										<Link href="/sign-in" className="h-full">
+										<Link href="/login" className="h-full">
 											Sign in
 										</Link>
 									</Button>
 									<Button className="h-full">
-										<Link href="/sign-up" className="h-full">
+										<Link href="/register" className="h-full">
 											Start selling
 										</Link>
 									</Button>
