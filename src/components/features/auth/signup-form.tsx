@@ -22,16 +22,16 @@ import {
 import { Input } from "@/components/shadcn-ui/input";
 import { authClient } from "@/lib/auth-client.util";
 import { cn } from "@/lib/utils";
-import { type FormSchema, zodSignUpFormSchema } from "./schemas";
+import { type SignUpFormSchema, zodSignUpFormSchema } from "./schemas";
 
 export function SignupForm({
 	className,
 	...props
 }: React.ComponentProps<"div">) {
-	const form = useForm<FormSchema>({
+	const form = useForm<SignUpFormSchema>({
 		resolver: zodResolver(zodSignUpFormSchema),
 	});
-	const handleFormSubmit = async (data: FormSchema) => {
+	const handleFormSubmit = async (data: SignUpFormSchema) => {
 		await authClient.signUp.email(
 			{
 				email: data.email,
