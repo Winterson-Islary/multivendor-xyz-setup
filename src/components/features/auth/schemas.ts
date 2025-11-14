@@ -12,4 +12,10 @@ export const zodSignUpFormSchema = z
 		path: ["confirmPassword"],
 	});
 
-export type FormSchema = z.infer<typeof zodSignUpFormSchema>;
+export type SignUpFormSchema = z.infer<typeof zodSignUpFormSchema>;
+
+export const zodSignInFormSchema = z.object({
+	email: z.email(),
+	password: z.string(),
+});
+export type SignInFormSchema = z.infer<typeof zodSignInFormSchema>;
