@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output = "./generated"
+  output   = "./generated"
 }
 
 datasource db {
@@ -15,114 +15,113 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  name           String
-  email          String   @unique
+  id            String    @id
+  name          String
+  email         String    @unique
   emailVerified Boolean   @default(false)
-  password       String
-  role           Role     @default(USER)
-  phone          String?
-  profileImage   String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  role          Role      @default(USER)
+  phone         String?
+  profileImage  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
 
   // Relations
-  stores         Store[]        @relation("UserStores")
-  reviews        Review[]
-  orders         Order[]
+  stores  Store[]  @relation("UserStores")
+  reviews Review[]
+  orders  Order[]
 
   @@map("users")
 }
 
 model Store {
-  id             String   @id @default(cuid())
-  name           String
-  description    String
-  logoUrl        String?
-  bannerUrl      String?
-  location       String?
-  contactEmail   String?
-  contactPhone   String?
-  rating         Float?   @default(0)
-  itemsCount     Int?     @default(0)
-  isVerified     Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  description  String
+  logoUrl      String?
+  bannerUrl    String?
+  location     String?
+  contactEmail String?
+  contactPhone String?
+  rating       Float?   @default(0)
+  itemsCount   Int?     @default(0)
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  ownerId        String
-  owner          User      @relation("UserStores", fields: [ownerId], references: [id])
-  department     Department? // optional one-to-one
-  items          Item[]
-  reviews        Review[]
+  ownerId    String
+  owner      User        @relation("UserStores", fields: [ownerId], references: [id])
+  department Department? // optional one-to-one
+  items      Item[]
+  reviews    Review[]
 }
 
 model Department {
-  id       String @id @default(cuid())
-  name     String
-  code     String? // e.g., "CSE", "MECH", etc.
-  store    Store?  @relation(fields: [storeId], references: [id])
-  storeId  String? @unique
+  id      String  @id @default(cuid())
+  name    String
+  code    String? // e.g., "CSE", "MECH", etc.
+  store   Store?  @relation(fields: [storeId], references: [id])
+  storeId String? @unique
 }
 
 model Item {
-  id            String   @id @default(cuid())
-  name          String
-  description   String
-  price         Float?
-  quantity      Int       @default(1)
-  imageUrl      String?
-  condition     Condition @default(USED)
-  rating        Float?    @default(0)
-  reviewCount   Int?      @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  price       Float?
+  quantity    Int       @default(1)
+  imageUrl    String?
+  condition   Condition @default(USED)
+  rating      Float?    @default(0)
+  reviewCount Int?      @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   // Relations
-  storeId       String
-  store         Store     @relation(fields: [storeId], references: [id])
-  categories    Category[] @relation("ItemCategories")
-  reviews       Review[]
-  orders        Order[]
+  storeId    String
+  store      Store      @relation(fields: [storeId], references: [id])
+  categories Category[] @relation("ItemCategories")
+  reviews    Review[]
+  orders     Order[]
 }
 
 model Review {
-  id         String   @id @default(cuid())
-  rating     Float
-  comment    String?
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  rating    Float
+  comment   String?
+  createdAt DateTime @default(now())
 
   // Relations
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  itemId     String
-  item       Item     @relation(fields: [itemId], references: [id])
-  storeId    String?
-  store      Store?   @relation(fields: [storeId], references: [id])
+  userId  String
+  user    User    @relation(fields: [userId], references: [id])
+  itemId  String
+  item    Item    @relation(fields: [itemId], references: [id])
+  storeId String?
+  store   Store?  @relation(fields: [storeId], references: [id])
 }
 
 model Order {
-  id          String    @id @default(cuid())
-  status      OrderStatus @default(PENDING)
-  quantity    Int        @default(1)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id        String      @id @default(cuid())
+  status    OrderStatus @default(PENDING)
+  quantity  Int         @default(1)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   // Relations
-  userId      String
-  user        User       @relation(fields: [userId], references: [id])
-  itemId      String
-  item        Item       @relation(fields: [itemId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
 }
 
 model Category {
-  id       String @id @default(cuid())
-  name     String @unique
+  id   String @id @default(cuid())
+  name String @unique
 
   // Many-to-Many
-  items    Item[] @relation("ItemCategories")
+  items Item[] @relation("ItemCategories")
 }
 
 // 📦 Enums
